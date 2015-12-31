@@ -2,7 +2,7 @@
   "name": "mindgruve/mg-reverse-proxy",
   "description": "Simple reverse proxy cache",
   "require": {
-    "doctrine/cache": "~1.5",
+    "doctrine/cache": "~1.4",
     "symfony/http-foundation": "~2.8",
     "symfony/http-kernel": "~2.8",
     "symfony/event-dispatcher": "~2.8"
