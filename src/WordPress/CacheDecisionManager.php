@@ -2,7 +2,7 @@
 
 namespace Mindgruve\ReverseProxy\WordPress;
 
-use Mindgruve\ReverseProxy\WordPress\CacheVoters\CacheVoterInterface;
+use Mindgruve\ReverseProxy\WordPress\CacheVoters\VoterInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -52,9 +52,9 @@ class CacheDecisionManager
     /**
      * ADD A CACHE VOTER
      * @param $key
-     * @param CacheVoterInterface $voter
+     * @param VoterInterface $voter
      */
-    public function addVoter($key, CacheVoterInterface $voter)
+    public function addVoter($key, VoterInterface $voter)
     {
         $this->voters[$key] = $voter;
     }
@@ -95,7 +95,7 @@ class CacheDecisionManager
 
         foreach ($this->voters as $voter) {
             /**
-             * @var CacheVoterInterface $voter
+             * @var VoterInterface $voter
              */
             if ($voter->supports($request, $response)) {
                 $maxAge = $voter->voteMaxAge($request);
@@ -120,7 +120,7 @@ class CacheDecisionManager
     {
         foreach ($this->voters as $voter) {
             /**
-             * @var CacheVoterInterface $voter
+             * @var VoterInterface $voter
              */
             if ($voter->supports($request)) {
 
@@ -146,7 +146,7 @@ class CacheDecisionManager
         $privateVotes = 0;
         foreach ($this->voters as $voter) {
             /**
-             * @var CacheVoterInterface $voter
+             * @var VoterInterface $voter
              */
             if ($voter->supports($request)) {
 
@@ -180,7 +180,7 @@ class CacheDecisionManager
 
         foreach ($this->voters as $voter) {
             /**
-             * @var CacheVoterInterface $voter
+             * @var VoterInterface $voter
              */
             if ($voter->supports($request)) {
 

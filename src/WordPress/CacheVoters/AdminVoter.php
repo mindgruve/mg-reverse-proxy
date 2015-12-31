@@ -5,7 +5,7 @@ namespace Mindgruve\ReverseProxy\WordPress\CacheVoters;
 use Mindgruve\ReverseProxy\WordPress\CacheDecisionManager;
 use Symfony\Component\HttpFoundation\Request;
 
-class WordPressAdmin implements CacheVoterInterface
+class WordPressAdmin implements VoterInterface
 {
     /**
      * @param Request $request
