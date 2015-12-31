@@ -6,7 +6,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Controller\ControllerResolverInterface;
 
-class WordPressBootstrap implements ControllerResolverInterface
+class BootstrapWordPress implements ControllerResolverInterface
 {
     protected $WordPress_ABSPATH;
 
