@@ -8,16 +8,16 @@ use Symfony\Component\HttpKernel\Controller\ControllerResolverInterface;
 
 class WordPressBootstrap implements ControllerResolverInterface
 {
-    protected $WordPress_ABSPATH;
+    protected $bootstrapFile;
 
     /**
      * THE PATH TO THE WORDPRESS INSTALLATION
      *
-     * @param $WordPress_ABSPATH
+     * @param $bootstrapFile
      */
-    public function __construct($WordPress_ABSPATH)
+    public function __construct($bootstrapFile)
     {
-        $this->WordPress_ABSPATH = $WordPress_ABSPATH;
+        $this->bootstrapFile = $bootstrapFile;
     }
 
     /**
@@ -30,7 +30,7 @@ class WordPressBootstrap implements ControllerResolverInterface
     public function getArguments(Request $request, $controller)
     {
         return array(
-            $this->WordPress_ABSPATH,
+            $this->bootstrapFile,
         );
     }
 
@@ -42,14 +42,14 @@ class WordPressBootstrap implements ControllerResolverInterface
      */
     public function getController(Request $request)
     {
-        $wpBootStrapFile = $this->WordPress_ABSPATH . '/wp-blog-header.php';
-        return function () use ($wpBootStrapFile) {
-            if (!file_exists($wpBootStrapFile)) {
+        $bootstrapFile = $this->bootstrapFile;
+        return function () use ($bootstrapFile) {
+            if (!file_exists($bootstrapFile)) {
                 throw new \Exception('Unable to bootstrap WordPress.');
             }
 
             ob_start();
-            include_once($wpBootStrapFile);
+            include_once($bootstrapFile);
             $output = ob_get_contents();
             ob_end_clean();
 

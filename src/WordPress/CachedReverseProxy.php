@@ -10,14 +10,14 @@ use Symfony\Component\HttpKernel\HttpCache\HttpCache;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Mindgruve\ReverseProxy\WordPress\CacheVoters\AdminVoter;
 
-class ReverseProxy
+class CachedReverseProxy
 {
 
     /**
      * THE PATH TO THE WORDPRESS INSTALLATION
      * @var string
      */
-    protected $wordPress_ABSPATH;
+    protected $bootstrapFile;
 
     /**
      * A CACHE DIRECTORY FOR THE REVERSE PROXY
@@ -41,9 +41,9 @@ class ReverseProxy
      * @param $cacheDir
      * @param $defaultMaxAge
      */
-    public function __construct($wordPress_ABSPATH, $cacheDir, $defaultMaxAge)
+    public function __construct($bootstrapFile, $cacheDir, $defaultMaxAge)
     {
-        $this->wordPress_ABSPATH = $wordPress_ABSPATH;
+        $this->bootstrapFile = $bootstrapFile;
         $this->cacheDir = $cacheDir;
         $this->defaultMaxAge = $defaultMaxAge;
 
@@ -77,7 +77,7 @@ class ReverseProxy
      */
     public function run()
     {
-        $kernel = new WordPressKernel(new EventDispatcher(), new WordPressBootstrap($this->wordPress_ABSPATH));
+        $kernel = new WordPressKernel(new EventDispatcher(), new WordPressBootstrap($this->bootstrapFile));
         $kernel = new HttpCache($kernel, new Store($this->cacheDir));
 
         $request = Request::createFromGlobals();
