@@ -10,14 +10,17 @@ class WordPressBootstrap implements ControllerResolverInterface
 {
     protected $bootstrapFile;
 
+    protected $cacheDecisionManager;
+
     /**
      * THE PATH TO THE WORDPRESS INSTALLATION
      *
      * @param $bootstrapFile
      */
-    public function __construct($bootstrapFile)
+    public function __construct($bootstrapFile, $cacheDecisionManager)
     {
         $this->bootstrapFile = $bootstrapFile;
+        $this->cacheDecisionManager = $cacheDecisionManager;
     }
 
     /**
@@ -43,7 +46,8 @@ class WordPressBootstrap implements ControllerResolverInterface
     public function getController(Request $request)
     {
         $bootstrapFile = $this->bootstrapFile;
-        return function () use ($bootstrapFile) {
+        $cacheDecisionManager = $this->cacheDecisionManager;
+        return function () use ($request, $bootstrapFile, $cacheDecisionManager) {
             if (!file_exists($bootstrapFile)) {
                 throw new \Exception('Unable to bootstrap WordPress.');
             }
@@ -56,6 +60,8 @@ class WordPressBootstrap implements ControllerResolverInterface
             $response = new Response($output);
             $response->headers->add(getallheaders());
             $response->setStatusCode(http_response_code());
+
+            $cacheDecisionManager->applyCacheRules( $request, $response);
 
             return $response;
         };

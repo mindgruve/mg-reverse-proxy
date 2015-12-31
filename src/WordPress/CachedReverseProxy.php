@@ -37,7 +37,7 @@ class CachedReverseProxy
     protected $cacheDecisionManager;
 
     /**
-     * @param $wordPress_ABSPATH
+     * @param $bootstrapFile
      * @param $cacheDir
      * @param $defaultMaxAge
      */
@@ -47,7 +47,7 @@ class CachedReverseProxy
         $this->cacheDir = $cacheDir;
         $this->defaultMaxAge = $defaultMaxAge;
 
-        $this->cacheDecisionManager = new CacheDecisionManager();
+        $this->cacheDecisionManager = new CacheDecisionManager($this->defaultMaxAge);
         $this->cacheDecisionManager->addVoter('wordpress_admin', new AdminVoter());
     }
 
@@ -77,12 +77,11 @@ class CachedReverseProxy
      */
     public function run()
     {
-        $kernel = new WordPressKernel(new EventDispatcher(), new WordPressBootstrap($this->bootstrapFile));
+        $kernel = new WordPressKernel(new EventDispatcher(), new WordPressBootstrap($this->bootstrapFile, $this->cacheDecisionManager));
         $kernel = new HttpCache($kernel, new Store($this->cacheDir));
 
         $request = Request::createFromGlobals();
         $response = $kernel->handle($request);
-        $this->cacheDecisionManager->applyCacheRules($this->defaultMaxAge, $request, $response);
 
         $response->send();
         $kernel->terminate($request, $response);

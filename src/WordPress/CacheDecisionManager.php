@@ -36,8 +36,9 @@ class CacheDecisionManager
      * @param array $voters
      * @throws \Exception
      */
-    public function __construct($strategy = self::DECISION_UNANIMOUS, array $voters = array())
+    public function __construct($defaultMaxAge, $strategy = self::DECISION_UNANIMOUS, array $voters = array())
     {
+        $this->maxAge = $defaultMaxAge;
         $this->voters = $voters;
         $this->strategy = $strategy;
 
@@ -75,15 +76,14 @@ class CacheDecisionManager
     /**
      * APPLY CACHE RULES AND DETERMINE MAX-AGE
      *
-     * @param $defaultMaxAge
      * @param Request $request
      * @param Response $response
+     * @return Response
      */
-    public function applyCacheRules($defaultMaxAge, Request $request, Response $response)
+    public function applyCacheRules( Request $request, Response $response)
     {
-        $this->maxAge = $defaultMaxAge;
         $response->setMaxAge($this->maxAge);
-        $response->setPrivate();
+        $response->setPublic();
 
         switch ($this->strategy) {
             case self::DECISION_AFFIRMATIVE:
@@ -111,6 +111,8 @@ class CacheDecisionManager
             }
         }
         $response->setMaxAge($this->maxAge);
+
+        return $response;
     }
 
     /**
@@ -129,6 +131,10 @@ class CacheDecisionManager
             if ($voter->supports($request)) {
 
                 $vote = $voter->voteCacheability($request);
+                if ($vote === self::VOTE_PRIVATE) {
+                    $response->setPrivate();
+                    return $response;
+                }
                 if ($vote === self::VOTE_PUBLIC) {
                     $response->setPublic();
                     return $response;
@@ -167,6 +173,8 @@ class CacheDecisionManager
 
         if ($publicVotes > $privateVotes) {
             $response->setPublic();
+        } elseif($publicVotes < $privateVotes){
+            $response->setPrivate();
         }
 
         return $response;
@@ -202,6 +210,8 @@ class CacheDecisionManager
 
         if ($publicVotes && $privateVotes == 0) {
             $response->setPublic();
+        } elseif($privateVotes && $publicVotes == 0){
+            $response->setPrivate();
         }
 
         return $response;
