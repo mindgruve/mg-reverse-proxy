@@ -12,6 +12,7 @@ class WordPressBootstrap implements ControllerResolverInterface
 
     /**
      * THE PATH TO THE WORDPRESS INSTALLATION
+     *
      * @param $WordPress_ABSPATH
      */
     public function __construct($WordPress_ABSPATH)
@@ -21,6 +22,7 @@ class WordPressBootstrap implements ControllerResolverInterface
 
     /**
      * THE ARGUMENTS PASSED TO THE CALLABLE
+     *
      * @param Request $request
      * @param callable $controller
      * @return array
@@ -34,6 +36,7 @@ class WordPressBootstrap implements ControllerResolverInterface
 
     /**
      * BOOTSTRAPS WORDPRESS, AND COLLECTS THE OUTPUT INTO A RESPONSE OBJECT
+     *
      * @param Request $request
      * @return callable
      */

@@ -20,6 +20,7 @@ class AdminVoter implements VoterInterface
 
     /**
      * DO NOT CACHE IF USER IS LOGGED IN
+     *
      * @return int
      */
     public function voteCacheability(Request $request)
@@ -30,6 +31,8 @@ class AdminVoter implements VoterInterface
     }
 
     /**
+     * VOTE ABSTAIN (ie - use the default max-age)
+     *
      * @param Request $request
      * @return int
      */

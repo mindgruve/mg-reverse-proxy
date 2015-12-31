@@ -51,6 +51,7 @@ class CacheDecisionManager
 
     /**
      * ADD A CACHE VOTER
+     *
      * @param $key
      * @param VoterInterface $voter
      */
@@ -61,6 +62,7 @@ class CacheDecisionManager
 
     /**
      * REMOVE A CACHE VOTER
+     *
      * @param $key
      */
     public function removeVoter($key)
@@ -72,6 +74,7 @@ class CacheDecisionManager
 
     /**
      * APPLY CACHE RULES AND DETERMINE MAX-AGE
+     *
      * @param $defaultMaxAge
      * @param Request $request
      * @param Response $response
@@ -99,7 +102,7 @@ class CacheDecisionManager
              */
             if ($voter->supports($request, $response)) {
                 $maxAge = $voter->voteMaxAge($request);
-                if ($maxAge < 0 || is_null($maxAge)) {
+                if ($maxAge == self::VOTE_ABSTAIN) {
                     continue;
                 }
                 if ($maxAge < $maxAge) {
@@ -112,6 +115,7 @@ class CacheDecisionManager
 
     /**
      * THE FIRST VOTER TO VOTE PUBLIC WILL MAKE THE RESPONSE PUBLIC
+     *
      * @param Request $request
      * @param Response $response
      * @return Response
@@ -136,6 +140,7 @@ class CacheDecisionManager
 
     /**
      * THERE MUST BE STRICTLY GREATER NUMBER OF PUBLIC VOTES
+     *
      * @param Request $request
      * @param Response $response
      * @return Response
@@ -169,6 +174,7 @@ class CacheDecisionManager
 
     /**
      * THERE MUST BE AT LEAST ONE PUBLIC VOTE AND NO PRIVATE VOTES
+     *
      * @param Request $request
      * @param Response $response
      * @return Response
