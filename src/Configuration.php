@@ -2,8 +2,8 @@
 
 namespace Mindgruve\ReverseProxy;
 
-use Symfony\Component\HttpKernel\HttpCache\Store;
 use Symfony\Component\HttpKernel\HttpCache\SurrogateInterface;
+use Symfony\Component\HttpKernel\HttpCache\StoreInterface;
 
 class Configuration
 {
@@ -21,7 +21,7 @@ class Configuration
 
     public function __construct(
         $bootstrapFilePath,
-        Store $store,
+        StoreInterface $store,
         $maxAge = 600,
         $defaultResponseType = self::RESPONSE_TYPE_PRIVATE,
         SurrogateInterface $surrogate = null,
