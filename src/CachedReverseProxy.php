@@ -21,6 +21,10 @@ class CachedReverseProxy
      */
     protected $configuration;
 
+    protected $request;
+
+    protected $rawOutput;
+
     /**
      * @var bool
      */
@@ -33,6 +37,9 @@ class CachedReverseProxy
         if ($this->configuration->isShutdownFunctionEnabled()) {
             register_shutdown_function(array($this, 'handleShutdown'));
         }
+        $this->request = Request::createFromGlobals();
+        $this->bootstrap();
+        $this->rawOutput = $this->getRawOutput();
     }
 
     public function handleShutdown()
@@ -42,9 +49,8 @@ class CachedReverseProxy
 
     public function run()
     {
-        $this->bootstrap();
-        $rawOutput = $this->getRawOutput();
-        $controllerResolver = new ControllerResolver($rawOutput, array($this, 'buildResponse'));
+
+        $controllerResolver = new ControllerResolver($this->rawOutput, array($this, 'buildResponse'));
         $kernel = new HttpKernel(new EventDispatcher(), $controllerResolver);
 
         if ($this->adapter->isEnabled()) {
@@ -56,12 +62,11 @@ class CachedReverseProxy
             );
         }
 
-        $request = Request::createFromGlobals();
-        $response = $kernel->handle($request);
 
-        $this->setCacheHeaders($this->configuration, $request, $response);
+        $response = $kernel->handle($this->request);
+
         $response->send();
-        $kernel->terminate($request, $response);
+        $kernel->terminate($this->request, $response);
     }
 
     public function bootstrap()
@@ -82,6 +87,7 @@ class CachedReverseProxy
         $response = new Response($rawOutput);
         $response->headers->add(getallheaders());
         $response->setStatusCode(http_response_code());
+        $response = $this->setCacheHeaders($this->configuration, $this->request, $response);
 
         return $response;
     }
@@ -95,7 +101,7 @@ class CachedReverseProxy
         if ($configuration->getDefaultResponseType() == Configuration::RESPONSE_TYPE_PUBLIC) {
             $response->setPublic();
         }
-        $this->adapter->setCacheHeaders($request, $response);
+        return $this->adapter->setCacheHeaders($request, $response);
     }
 
 }
