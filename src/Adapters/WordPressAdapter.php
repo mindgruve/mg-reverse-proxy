@@ -8,26 +8,6 @@ use Symfony\Component\HttpFoundation\Response;
 
 class WordPressAdapter implements AdapterInterface
 {
-    protected $filename;
-
-    public function __construct($filename)
-    {
-        $this->filename = $filename;
-    }
-
-    public function bootstrap()
-    {
-        ob_start();
-        include_once($this->filename);
-    }
-
-    public function getRawOutput()
-    {
-        $rawOutput = ob_get_contents();
-        ob_end_clean();
-
-        return $rawOutput;
-    }
 
     /**
      * @return boolean
@@ -47,6 +27,7 @@ class WordPressAdapter implements AdapterInterface
         if (!$this->isLoggedIn()) {
             $response->setPublic();
         }
+        return $response;
     }
 
     protected function isLoggedIn()

@@ -17,8 +17,10 @@ class Configuration
     protected $httpCacheOptions;
     protected $enableShutdownFunction;
     protected $defaultResponseType;
+    protected $bootstrapFilePath;
 
     public function __construct(
+        $bootstrapFilePath,
         Store $store,
         $maxAge = 600,
         $defaultResponseType = self::RESPONSE_TYPE_PRIVATE,
@@ -26,11 +28,16 @@ class Configuration
         array $httpCacheOptions = array(),
         $enableShutdownFunction = true)
     {
+        $this->bootstrapFilePath = $bootstrapFilePath;
         $this->maxAge = $maxAge;
         $this->store = $store;
         $this->surrogate;
         $this->httpCacheOptions = $httpCacheOptions;
         $this->enableShutdownFunction = $enableShutdownFunction;
+    }
+
+    public function getBootstrapFilePath(){
+        return $this->bootstrapFilePath;
     }
 
     public function getMaxAge()

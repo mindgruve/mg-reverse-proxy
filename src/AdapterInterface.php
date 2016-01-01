@@ -19,14 +19,4 @@ interface AdapterInterface
      */
     public function setCacheHeaders(Request $request, Response $response);
 
-    /**
-     *
-     */
-    public function bootstrap();
-
-    /**
-     * @return string
-     */
-    public function getRawOutput();
-
 }

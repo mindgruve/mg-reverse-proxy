@@ -7,10 +7,6 @@ use Symfony\Component\HttpKernel\Controller\ControllerResolverInterface;
 
 class ControllerResolver implements ControllerResolverInterface
 {
-    /**
-     * @var string
-     */
-    protected $rawOutput;
 
     /**
      * @var callable
@@ -18,12 +14,10 @@ class ControllerResolver implements ControllerResolverInterface
     protected $controller;
 
     /**
-     * @param $rawOutput
      * @param callable $controller
      */
-    public function __construct($rawOutput, Callable $controller)
+    public function __construct(Callable $controller)
     {
-        $this->rawOutput = $rawOutput;
         $this->controller = $controller;
     }
 
@@ -35,7 +29,6 @@ class ControllerResolver implements ControllerResolverInterface
     public function getArguments(Request $request, $controller)
     {
         return array(
-            $this->rawOutput,
         );
     }
 
@@ -45,7 +38,7 @@ class ControllerResolver implements ControllerResolverInterface
      */
     public function getController(Request $request)
     {
-       return $this->controller;
+        return $this->controller;
     }
 
 
