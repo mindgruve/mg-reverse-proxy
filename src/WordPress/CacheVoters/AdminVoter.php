@@ -25,8 +25,8 @@ class AdminVoter implements VoterInterface
      */
     public function voteCacheability(Request $request)
     {
-        if (is_user_logged_in()) {
-            return CacheDecisionManager::VOTE_PRIVATE;
+        if (!is_user_logged_in()) {
+            return CacheDecisionManager::VOTE_PUBLIC;
         }
     }
 

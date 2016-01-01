@@ -78,12 +78,30 @@ class CachedReverseProxy
     public function run()
     {
         $kernel = new WordPressKernel(new EventDispatcher(), new WordPressBootstrap($this->bootstrapFile, $this->cacheDecisionManager));
-        $kernel = new HttpCache($kernel, new Store($this->cacheDir));
+
+        /** Enable httpcache if and only if user is not logged in */
+        if(!$this->isLoggedIn()){
+            $kernel = new HttpCache($kernel, new Store($this->cacheDir));
+        }
 
         $request = Request::createFromGlobals();
         $response = $kernel->handle($request);
 
         $response->send();
         $kernel->terminate($request, $response);
+    }
+
+    /**
+     * CHECKS FOR WORDPRESS COOKIE
+     * @return bool
+     */
+    public function isLoggedIn()
+    {
+        foreach ($_COOKIE as $key => $value) {
+            if (preg_match('/^wordpress_logged_in_(.*)/', $key)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

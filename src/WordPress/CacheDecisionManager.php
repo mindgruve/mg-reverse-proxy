@@ -83,7 +83,7 @@ class CacheDecisionManager
     public function applyCacheRules( Request $request, Response $response)
     {
         $response->setMaxAge($this->maxAge);
-        $response->setPublic();
+        $response->setPrivate();
 
         switch ($this->strategy) {
             case self::DECISION_AFFIRMATIVE:
