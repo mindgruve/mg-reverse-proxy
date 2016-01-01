@@ -42,6 +42,7 @@ class CachedReverseProxy
 
     public function run()
     {
+        $this->bootstrap();
         $rawOutput = $this->getRawOutput();
         $controllerResolver = new ControllerResolver($rawOutput, array($this, 'buildResponse'));
         $kernel = new HttpKernel(new EventDispatcher(), $controllerResolver);
@@ -94,7 +95,7 @@ class CachedReverseProxy
         if ($configuration->getDefaultResponseType() == Configuration::RESPONSE_TYPE_PUBLIC) {
             $response->setPublic();
         }
-        $this->adapter->setCacheHeaders($response, $request);
+        $this->adapter->setCacheHeaders($request, $response);
     }
 
 }
