@@ -8,7 +8,6 @@ use Symfony\Component\HttpKernel\HttpCache\Store;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\HttpCache\HttpCache;
 use Symfony\Component\EventDispatcher\EventDispatcher;
-use Mindgruve\ReverseProxy\WordPress\CacheVoters\AdminVoter;
 
 class CachedReverseProxy
 {
@@ -46,9 +45,7 @@ class CachedReverseProxy
         $this->bootstrapFile = $bootstrapFile;
         $this->cacheDir = $cacheDir;
         $this->defaultMaxAge = $defaultMaxAge;
-
         $this->cacheDecisionManager = new CacheDecisionManager($this->defaultMaxAge);
-        $this->cacheDecisionManager->addVoter('wordpress_admin', new AdminVoter());
     }
 
     /**
