@@ -4,6 +4,7 @@ namespace Mindgruve\ReverseProxy\Adapters;
 
 use Mindgruve\ReverseProxy\AdapterInterface;
 use Mindgruve\ReverseProxy\CachedReverseProxy;
+use Mindgruve\ReverseProxy\Configuration;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -43,7 +44,7 @@ class WordPress implements AdapterInterface
      * @param Response $response
      * @return Response
      */
-    public function setCacheHeaders(Request $request, Response $response)
+    public function setCacheHeaders( Request $request, Response $response)
     {
         if (!$this->isLoggedIn()) {
             $response->setPublic();

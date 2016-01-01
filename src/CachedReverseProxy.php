@@ -58,7 +58,7 @@ class CachedReverseProxy
         $request = Request::createFromGlobals();
         $response = $kernel->handle($request);
 
-        $this->setCacheHeaders($request, $response);
+        $this->setCacheHeaders($this->configuration, $request, $response);
         $response->send();
         $kernel->terminate($request, $response);
     }
@@ -85,8 +85,15 @@ class CachedReverseProxy
         return $response;
     }
 
-    public function setCacheHeaders(Request $request, Response $response)
+    public function setCacheHeaders(Configuration $configuration, Request $request, Response $response)
     {
+        $response->setMaxAge($configuration->getMaxAge());
+        if ($configuration->getDefaultResponseType() == Configuration::RESPONSE_TYPE_PRIVATE) {
+            $response->setPrivate();
+        }
+        if ($configuration->getDefaultResponseType() == Configuration::RESPONSE_TYPE_PUBLIC) {
+            $response->setPublic();
+        }
         $this->adapter->setCacheHeaders($response, $request);
     }
 

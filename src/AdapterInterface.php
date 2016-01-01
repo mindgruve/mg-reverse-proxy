@@ -16,12 +16,17 @@ interface AdapterInterface
     /**
      * @param Request $request
      * @param Response $response
-     * @return Response
      */
     public function setCacheHeaders(Request $request, Response $response);
 
+    /**
+     *
+     */
     public function bootstrap();
 
+    /**
+     * @return string
+     */
     public function getRawOutput();
 
 }

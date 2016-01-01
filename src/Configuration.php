@@ -7,17 +7,35 @@ use Symfony\Component\HttpKernel\HttpCache\SurrogateInterface;
 
 class Configuration
 {
+
+    const RESPONSE_TYPE_PRIVATE = 'private';
+    const RESPONSE_TYPE_PUBLIC = 'public';
+
+    protected $maxAge;
     protected $store;
     protected $surrogate;
     protected $httpCacheOptions;
     protected $enableShutdownFunction;
+    protected $defaultResponseType;
 
-    public function __construct(Store $store = null, SurrogateInterface $surrogate = null, array $httpCacheOptions = array(), $enableShutdownFunction = true)
+    public function __construct(
+        Store $store,
+        $maxAge = 600,
+        $defaultResponseType = self::RESPONSE_TYPE_PRIVATE,
+        SurrogateInterface $surrogate = null,
+        array $httpCacheOptions = array(),
+        $enableShutdownFunction = true)
     {
+        $this->maxAge = $maxAge;
         $this->store = $store;
         $this->surrogate;
         $this->httpCacheOptions = $httpCacheOptions;
         $this->enableShutdownFunction = $enableShutdownFunction;
+    }
+
+    public function getMaxAge()
+    {
+        return $this->maxAge;
     }
 
     public function getStore()
@@ -40,5 +58,9 @@ class Configuration
         return $this->enableShutdownFunction;
     }
 
+    public function getDefaultResponseType()
+    {
+        return $this->defaultResponseType;
+    }
 
 }
