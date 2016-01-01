@@ -1,19 +1,15 @@
 # mg-reverse-proxy
 
-MG-Reverse-Proxy works by transforming the output buffer and headers created by your application into a Symfony Reponse object that 
-it can use to intellegently cache using the Symfony HTTP Cache.  Response times are dramatically reduced because the responses
-will be cached.
+MG-Reverse-Proxy works by transforming the output buffer and headers created by your application into a Symfony Reponse object that it can use to intellegently cache using the Symfony HTTP Cache.  
 
 ## HTTP Caching Overview
-In general, MG-Reverse-Proxy follows well defined caching scheme, utilizing HTTP Headers.
-It will cache responses that are set to PUBLIC and have a non-zero MAX-AGE, and will only cache 'safe' HTTP methods.
-Since MG-Reverse-Proxy leverages the Symfony HTTPCache, there are many methods available to customize your response headers.
+In general, MG-Reverse-Proxy will cache responses that are set to PUBLIC and have a non-zero MAX-AGE, and will only cache 'safe' HTTP methods.  Since MG-Reverse-Proxy leverages the Symfony HTTPCache, there are many methods available to customize your response headers.
 
 For more information on the Symfony HTTPCache see: http://symfony.com/doc/current/book/http_cache.html
 
 ## Use Cases
-Content heavy sites that do not change often are a good candidate for MG-Reverse-Proxy.  You can customize the cacheability
-of the responses by customizing/building an adapter for your application (described below).
+Content heavy sites are a good candidate for MG-Reverse-Proxy.  You can customize the cacheability
+of the responses by setting cache headers in your application or configuring your cache adapter (described below).
 
 ##Example Usage - Wordpress index.php
 
@@ -53,7 +49,7 @@ Subsequent Requests:
             -> Generated webpage pulled from cache
             -> Returns response to user
             
-    Note: With a cached response, your application is not hit at all, and database is not querried.
+    Note: With a cached response, your application is not bootstrapped at all.  This can dramatically reduce response times.
       
 
 ## Stores
@@ -72,3 +68,8 @@ MG-Reverse-Proxy uses a configuration object to manage the configuration.  A des
 **$enableShutdownFunction** - Sometimes your application will return a response, then exit().  To enable cacheability of these responses, MG-Reverse-Proxy will register a shutdown function to obtain the output buffer and headers.  If you do not want these responses to be cached, set this parameter to false.
 
 ## Adapters
+
+
+
+
+
