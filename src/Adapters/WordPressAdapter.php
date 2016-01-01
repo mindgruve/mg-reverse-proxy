@@ -3,12 +3,10 @@
 namespace Mindgruve\ReverseProxy\Adapters;
 
 use Mindgruve\ReverseProxy\AdapterInterface;
-use Mindgruve\ReverseProxy\CachedReverseProxy;
-use Mindgruve\ReverseProxy\Configuration;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class WordPress implements AdapterInterface
+class WordPressAdapter implements AdapterInterface
 {
     protected $filename;
 
@@ -36,7 +34,7 @@ class WordPress implements AdapterInterface
      */
     public function isEnabled()
     {
-        return $this->isLoggedIn();
+        return $this->isLoggedIn() == false;
     }
 
     /**
