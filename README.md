@@ -31,8 +31,8 @@ Becomes...
     use Mindgruve\ReverseProxy\CachedReverseProxy;
     use Mindgruve\ReverseProxy\Adapters\WordPressAdapter;
 
-    $store = new Store(dirname(__FILE__) . '/wp/wp-content/cache');
-    $proxyConfig = new Configuration(dirname( __FILE__ ) . '/wp/wp-blog-header.php',$store);
+    $store = new Store(dirname(__FILE__) . '/path/to/wp-content/cache');
+    $proxyConfig = new Configuration(dirname( __FILE__ ) . '/path/to/wp-blog-header.php',$store);
     $reverseProxy = new CachedReverseProxy(new WordPressAdapter(), $proxyConfig);
     $reverseProxy->run();
 
