@@ -11,6 +11,23 @@ For more information on the Symfony HTTPCache see: http://symfony.com/doc/curren
 Content heavy sites are a good candidate for MG-Reverse-Proxy.  You can customize the cacheability
 of the responses by setting cache headers in your application or configuring your cache adapter (described below).
 
+## Cache Adapters
+Configuration of MG-Reverse-Proxy is handled through cache adapters.  Included in the source code is an adapter for WordPress, but you can write your own by implementing the CacheAdapterInterface.
+
+## The WordPress Adapter
+A description of these constructor arguments....
+
+**$bootstrapFile** The path to the file that bootstraps your application.  For example, the wp-blog-header.php file in wordpress.   
+**$store** The cache store that you want the reverse proxy to use.   
+**$maxAge** The default max-age for your responses.  You can instruct MG-Reverse-Proxy to vary this per request by adjusting your adapter.   
+**$surrogate** - See the documentation of the Symfony HTTPCache.  Useful if you are using Varnish.   
+**$httpCacheOptions** - These are the options passed to the Symfony HTTPCache class.    
+
+
+## Stores
+Symfony HTTPCache has the concept of a cache store.  By default, this is a local directory on the file system.
+If you want to use a different caching strategy (memcache, redis...), you can create your own implementation of the StoreInterface.
+
 ##Example Usage - Wordpress index.php
 
     <?php
@@ -49,24 +66,6 @@ Subsequent Requests:
             
     Note: With a cached response, your application is not bootstrapped at all.  This can dramatically reduce response times.
       
-
-## Stores
-Symfony HTTPCache has the concept of a cache store.  By default, this is a local directory on the file system.
-If you want to use a different caching strategy (memcache, redis...), you can create your own implementation of the StoreInterface.
-
-## Cache Adapters
-Cache adapters allow you to globally configure MG-Reverse-Proxy.  There is a WordPress adapter provided that you can use or you can create your own Adapter by implementing the AdapterInterface.
-
-## Configuration
-MG-Reverse-Proxy uses a configuration object to manage the configuration.  A description of these configuration options....
-
-**$bootstrapFilePath** The path to the file that bootstraps your application.  For example, the wp-blog-header.php file in wordpress.   
-**$store** The cache store that you want the reverse proxy to use.   
-**$maxAge** The default max-age for your responses.  You can instruct MG-Reverse-Proxy to vary this per request by adjusting your adapter.   
-**$defaultResponseType** Either 'public' or 'private'.  If you choose 'private', then by default none of your reponses will be cached, and the reverse is true for 'public'.   
-**$surrogate** - See the documentation of the Symfony HTTPCache.  Useful if you are using Varnish.   
-**$httpCacheOptions** - These are the options passed to the Symfony HTTPCache class.    
-**$enableShutdownFunction** - Sometimes your application will return a response, then exit().  To enable cacheability of these responses, MG-Reverse-Proxy will register a shutdown function to obtain the output buffer and headers.  If you do not want these responses to be cached, set this parameter to false.
 
 
 
