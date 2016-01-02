@@ -10,9 +10,6 @@ use Symfony\Component\HttpKernel\HttpCache\SurrogateInterface;
 interface CacheAdapterInterface
 {
 
-    const RESPONSE_TYPE_PRIVATE = 'private';
-    const RESPONSE_TYPE_PUBLIC = 'public';
-
     /**
      * @return boolean
      */
