@@ -77,8 +77,40 @@ There are a number of entry points that you can use to modify the behavior of MG
 **getRawContent** (string) - This method returns back a string of the output buffers, that MG-Reverse-Proxy converts to a Symfony Response object.    
 **getDefaultResponseType** (string) 'private' | 'public' - This method is called to set the default response type.  The default is private, so that you must explicitly mark responses as public to make them cacheable.  If you want all responses to becacheable, and you explicitly mark the private responses, overwrite this method and return 'public'.    
 
-## Example - 
+## Example - Updating WordPress Adapter - Marking Contact Page as Private
+Say you have a WordPress site with a contact page, and you are using MG-Reverse-Proxy to speed up the responsiveness of your site.  It all works well, except you have a contact form on the url **/contact**.   Caching this page is problematic because the CSRF token, and validation errors will get cached.  By default, the WordPress adapter will cache any page viewed by a anonymous user.  
 
+To override this behavior, create a new class...
 
+    use Mindgruve\ReverseProxy\Adapters\WordPressAdapter;
+    
+    class CustomWordpressAdapter extends WordPressAdapter {
+    
+        /**
+         * @param Request $request
+         * @param Response $response
+         * @return Response
+         */
+        public function setCacheHeaders(Request $request, Response $response)
+        {
+            if(preg_match('/^contact', $request->getRequestUri()){
+                $response->setPrivate;
+                return response;
+            }
+        
+            return parent::setCacheHeaders($request, $response)
+        }
+    }
 
+Then, in your index.php file, use your custom adapter instead...
 
+    $reverseProxy = new CachedReverseProxy(new CustomWordpressAdapter(dirname( __FILE__ ) . '/wp/wp-blog-header.php', 600, $store));
+
+## MIT License
+Copyright (c) 2016 Mindgruve
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
