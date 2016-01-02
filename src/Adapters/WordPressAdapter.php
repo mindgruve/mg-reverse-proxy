@@ -46,7 +46,7 @@ class WordPressAdapter implements CacheAdapterInterface
     /**
      * @return boolean
      */
-    public function isCachingEnabled()
+    public function isCachingEnabled(Request $request)
     {
         return $this->isLoggedIn() == false;
     }
@@ -91,7 +91,7 @@ class WordPressAdapter implements CacheAdapterInterface
     /**
      * @return StoreInterface
      */
-    public function getStore()
+    public function getStore(Request $request)
     {
         return $this->store;
     }
@@ -99,7 +99,7 @@ class WordPressAdapter implements CacheAdapterInterface
     /**
      * @return null | SurrogateInterface
      */
-    public function getSurrogate()
+    public function getSurrogate(Request $request)
     {
         return $this->surrogate;
     }
@@ -107,12 +107,12 @@ class WordPressAdapter implements CacheAdapterInterface
     /**
      * @return array
      */
-    public function getHttpCacheOptions()
+    public function getHttpCacheOptions(Request $request)
     {
         return $this->httpCacheOptions;
     }
 
-    public function bootstrap()
+    public function bootstrap(Request $request)
     {
         ob_start();
         include_once($this->bootstrapFile);
@@ -121,7 +121,7 @@ class WordPressAdapter implements CacheAdapterInterface
     /**
      * @return string
      */
-    public function getRawContent()
+    public function getRawContent(Request $request)
     {
         $rawContent = ob_get_contents();
         ob_end_clean();

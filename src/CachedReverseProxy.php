@@ -32,7 +32,7 @@ class CachedReverseProxy
         $this->adapter = $adapter;
 
         if ($this->adapter->isShutdownFunctionEnabled($this->request)) {
-            register_shutdown_function(array($this, 'run'));
+            register_shutdown_function(array($this, 'handleShutdown'));
         }
     }
 
@@ -41,7 +41,7 @@ class CachedReverseProxy
      */
     public function handleShutdown()
     {
-        $this->run();
+        $this->buildAndCacheResponse();
     }
 
     /**
@@ -49,15 +49,19 @@ class CachedReverseProxy
      */
     public function run()
     {
+        $this->buildAndCacheResponse();
+    }
+
+    protected function buildAndCacheResponse(){
         $controllerResolver = new ControllerResolver(array($this, 'buildResponse'));
         $kernel = new HttpKernel(new EventDispatcher(), $controllerResolver);
 
-        if ($this->adapter->isCachingEnabled()) {
+        if ($this->adapter->isCachingEnabled($this->request)) {
             $kernel = new HttpCache(
                 $kernel,
-                $this->adapter->getStore(),
-                $this->adapter->getSurrogate(),
-                $this->adapter->getHttpCacheOptions()
+                $this->adapter->getStore($this->request),
+                $this->adapter->getSurrogate($this->request),
+                $this->adapter->getHttpCacheOptions($this->request)
             );
         }
 
@@ -74,7 +78,7 @@ class CachedReverseProxy
     {
         if (!$this->bootstrapped) {
             $this->bootstrapped = true;
-            $this->adapter->bootstrap();
+            $this->adapter->bootstrap($this->request);
         }
     }
 
@@ -83,7 +87,7 @@ class CachedReverseProxy
      */
     public function getRawContent()
     {
-        return $this->adapter->getRawContent();
+        return $this->adapter->getRawContent($this->request);
     }
 
     /**

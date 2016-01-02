@@ -13,7 +13,7 @@ interface CacheAdapterInterface
     /**
      * @return boolean
      */
-    public function isCachingEnabled();
+    public function isCachingEnabled(Request $request);
 
     /**
      * @param Request $request
@@ -30,24 +30,24 @@ interface CacheAdapterInterface
     /**
      * @return StoreInterface
      */
-    public function getStore();
+    public function getStore(Request $request);
 
     /**
      * @return null | SurrogateInterface
      */
-    public function getSurrogate();
+    public function getSurrogate(Request $request);
 
     /**
      * @return array
      */
-    public function getHttpCacheOptions();
+    public function getHttpCacheOptions(Request $request);
 
 
-    public function bootstrap();
+    public function bootstrap(Request $request);
 
     /**
      * @return string
      */
-    public function getRawContent();
+    public function getRawContent(Request $request);
 
 }
