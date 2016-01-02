@@ -70,12 +70,12 @@ Included with is an adapter for WordPress.  A description of these constructor a
 ## Modifying the WordPress Adapter
 There are a number of entry points that you can use to modify the behavior of MG-Reverse-Proxy.  To use a custom wordpress adapter, extend the included class and overwrite the relevant method.  Or you can write your own adapter by implementing the ReverseCacheInterface.
 
-**isCachingEnabled** (bool) - If false, caching will be turned off, and all responses will hit the WordPress application.  The default behavior of the WordPress adapter is to turn off caching anytime the user is logged in.  This allows admin users to see the non-cached version of the website.
-**isShutdownFunctionEnabled** (bool) - If true, MG-Reverse-Proxy will register a shutdown function to capture output sent to the user after an exit() call.  This is useful for API-Like calls that often exit after echoing their response.  The default is true.    
-**setCacheHeaders** (Response) - This method is called to allow you to set custom cache headers.  Using this method you can mark certain methods as public.  By default, the WordPress adapter will set this to private if the user is logged in, and public otherwise.
+**isCachingEnabled** (bool) - If false, caching will be turned off, and all responses will hit the WordPress application.  The default behavior of the WordPress adapter is to turn off caching anytime the user is logged in.  This allows admin users to see the non-cached version of the website.   
+**isShutdownFunctionEnabled** (bool) - If true, MG-Reverse-Proxy will register a shutdown function to capture output sent to the user after an exit() call.  This is useful for API-Like calls that often exit after echoing their response.  The default is true.     
+**setCacheHeaders** (Response) - This method is called to allow you to set custom cache headers.  Using this method you can mark certain methods as public.  By default, the WordPress adapter will set this to private if the user is logged in, and public otherwise.   
 **bootstrap** (Void) - This method is called to bootstrap WordPress.    
 **getRawContent** (string) - This method returns back a string of the output buffers, that MG-Reverse-Proxy converts to a Symfony Response object.    
-**getDefaultResponseType** 'private' | 'public' - This method is called to set the default response type.  The default is private, so that you must explicitly mark responses as public to make them cacheable.  If you want all responses to becacheable, and you explicitly mark the private responses, overwrite this method and return 'public'.    
+**getDefaultResponseType** (string) 'private' | 'public' - This method is called to set the default response type.  The default is private, so that you must explicitly mark responses as public to make them cacheable.  If you want all responses to becacheable, and you explicitly mark the private responses, overwrite this method and return 'public'.    
 
 ## Example - 
 
