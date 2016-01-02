@@ -53,9 +53,10 @@ class WordPressAdapter extends AbstractCacheAdapter
     }
 
     /**
-     * @return boolean
+     * @param Request $request
+     * @return bool
      */
-    public function isShutdownFunctionEnabled()
+    public function isShutdownFunctionEnabled(Request $request)
     {
         return true;
     }
@@ -116,6 +117,9 @@ class WordPressAdapter extends AbstractCacheAdapter
         include_once($this->bootstrapFile);
     }
 
+    /**
+     * @return string
+     */
     public function getRawContent()
     {
         $rawContent = ob_get_contents();

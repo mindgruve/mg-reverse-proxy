@@ -22,11 +22,6 @@ class CachedReverseProxy
     protected $request;
 
     /**
-     * @var
-     */
-    protected $rawContent;
-
-    /**
      * @var bool
      */
     protected $bootstrapped = false;
@@ -36,8 +31,8 @@ class CachedReverseProxy
         $this->request = Request::createFromGlobals();
         $this->adapter = $adapter;
 
-        if ($this->adapter->isShutdownFunctionEnabled()) {
-            register_shutdown_function(array($this, 'handleShutdown'));
+        if ($this->adapter->isShutdownFunctionEnabled($this->request)) {
+            register_shutdown_function(array($this, 'run'));
         }
     }
 
@@ -73,7 +68,7 @@ class CachedReverseProxy
     }
 
     /**
-     *
+     * Bootstrap application
      */
     public function bootstrap()
     {
@@ -97,8 +92,8 @@ class CachedReverseProxy
     public function buildResponse()
     {
         $this->bootstrap();
-        $this->rawContent = $this->getRawContent();
-        $response = new Response($this->rawContent);
+        $rawContent = $this->getRawContent();
+        $response = new Response($rawContent);
         $response->headers->add(getallheaders());
         $response->setStatusCode(http_response_code());
         $response = $this->setCacheHeaders($this->request, $response);
@@ -122,5 +117,4 @@ class CachedReverseProxy
         }
         return $this->adapter->setCacheHeaders($request, $response);
     }
-
 }

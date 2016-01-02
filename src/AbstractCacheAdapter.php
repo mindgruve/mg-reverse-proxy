@@ -19,9 +19,10 @@ abstract class AbstractCacheAdapter
     abstract public function isCachingEnabled();
 
     /**
+     * @param Request $request
      * @return boolean
      */
-    abstract public function isShutdownFunctionEnabled();
+    abstract public function isShutdownFunctionEnabled(Request $request);
 
     /**
      * @param Request $request
