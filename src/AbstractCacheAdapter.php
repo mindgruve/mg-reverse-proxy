@@ -7,7 +7,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\HttpCache\StoreInterface;
 use Symfony\Component\HttpKernel\HttpCache\SurrogateInterface;
 
-abstract class AbstractCacheAdapter
+interface CacheAdapterInterface
 {
 
     const RESPONSE_TYPE_PRIVATE = 'private';
@@ -16,51 +16,51 @@ abstract class AbstractCacheAdapter
     /**
      * @return boolean
      */
-    abstract public function isCachingEnabled();
+    public function isCachingEnabled();
 
     /**
      * @param Request $request
      * @return boolean
      */
-    abstract public function isShutdownFunctionEnabled(Request $request);
+    public function isShutdownFunctionEnabled(Request $request);
 
     /**
      * @param Request $request
      * @param Response $response
      */
-    abstract public function setCacheHeaders(Request $request, Response $response);
+    public function setCacheHeaders(Request $request, Response $response);
 
     /**
      * @return StoreInterface
      */
-    abstract public function getStore();
+    public function getStore();
 
     /**
      * @return null | SurrogateInterface
      */
-    abstract public function getSurrogate();
+    public function getSurrogate();
 
     /**
      * @return array
      */
-    abstract public function getHttpCacheOptions();
+    public function getHttpCacheOptions();
 
 
-    abstract public function bootstrap();
+    public function bootstrap();
 
     /**
      * @return string
      */
-    abstract public function getRawContent();
+    public function getRawContent();
 
     /**
      * @return int
      */
-    abstract public function getDefaultMaxAge();
+    public function getDefaultMaxAge();
 
     /**
      * @return string
      */
-    abstract public function getDefaultResponseType();
+    public function getDefaultResponseType();
 
 }

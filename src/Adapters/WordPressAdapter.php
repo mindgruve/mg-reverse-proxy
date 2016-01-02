@@ -2,13 +2,13 @@
 
 namespace Mindgruve\ReverseProxy\Adapters;
 
-use Mindgruve\ReverseProxy\AbstractCacheAdapter;
+use Mindgruve\ReverseProxy\CacheAdapterInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\HttpCache\StoreInterface;
 use Symfony\Component\HttpKernel\HttpCache\SurrogateInterface;
 
-class WordPressAdapter extends AbstractCacheAdapter
+class WordPressAdapter implements CacheAdapterInterface
 {
     /**
      * @var StoreInterface
