@@ -12,7 +12,7 @@ class CachedReverseProxy
 {
 
     /**
-     * @var AbstractCacheAdapter
+     * @var CacheAdapterInterface
      */
     protected $adapter;
 
@@ -26,7 +26,7 @@ class CachedReverseProxy
      */
     protected $bootstrapped = false;
 
-    public function __construct(AbstractCacheAdapter $adapter)
+    public function __construct(CacheAdapterInterface $adapter)
     {
         $this->request = Request::createFromGlobals();
         $this->adapter = $adapter;
@@ -109,10 +109,10 @@ class CachedReverseProxy
     public function setCacheHeaders(Request $request, Response $response)
     {
         $response->setMaxAge($this->adapter->getDefaultMaxAge());
-        if ($this->adapter->getDefaultResponseType() == AbstractCacheAdapter::RESPONSE_TYPE_PRIVATE) {
+        if ($this->adapter->getDefaultResponseType() == CacheAdapterInterface::RESPONSE_TYPE_PRIVATE) {
             $response->setPrivate();
         }
-        if ($this->adapter->getDefaultResponseType() == AbstractCacheAdapter::RESPONSE_TYPE_PUBLIC) {
+        if ($this->adapter->getDefaultResponseType() == CacheAdapterInterface::RESPONSE_TYPE_PUBLIC) {
             $response->setPublic();
         }
         return $this->adapter->setCacheHeaders($request, $response);
