@@ -20,16 +20,14 @@ of the responses by setting cache headers in your application or configuring you
 Becomes...
 
     <?php 
-    include_once(__DIR__ . '/path/to/vendor/autoload.php');
+    include_once(__DIR__ . '/../../application/vendor/autoload.php');
 
-    use Mindgruve\ReverseProxy\Configuration;
     use Symfony\Component\HttpKernel\HttpCache\Store;
     use Mindgruve\ReverseProxy\CachedReverseProxy;
     use Mindgruve\ReverseProxy\Adapters\WordPressAdapter;
 
-    $store = new Store(dirname(__FILE__) . '/path/to/wp-content/cache');
-    $proxyConfig = new Configuration(dirname( __FILE__ ) . '/path/to/wp-blog-header.php',$store);
-    $reverseProxy = new CachedReverseProxy(new WordPressAdapter(), $proxyConfig);
+    $store = new Store(dirname(__FILE__) . '/wp/wp-content/cache');
+    $reverseProxy = new CachedReverseProxy(new WordPressAdapter(dirname( __FILE__ ) . '/wp/wp-blog-header.php', 600, $store));
     $reverseProxy->run();
 
 Initial Request:
@@ -56,6 +54,9 @@ Subsequent Requests:
 Symfony HTTPCache has the concept of a cache store.  By default, this is a local directory on the file system.
 If you want to use a different caching strategy (memcache, redis...), you can create your own implementation of the StoreInterface.
 
+## Cache Adapters
+Cache adapters allow you to globally configure MG-Reverse-Proxy.  There is a WordPress adapter provided that you can use or you can create your own Adapter by implementing the AdapterInterface.
+
 ## Configuration
 MG-Reverse-Proxy uses a configuration object to manage the configuration.  A description of these configuration options....
 
@@ -66,8 +67,6 @@ MG-Reverse-Proxy uses a configuration object to manage the configuration.  A des
 **$surrogate** - See the documentation of the Symfony HTTPCache.  Useful if you are using Varnish.   
 **$httpCacheOptions** - These are the options passed to the Symfony HTTPCache class.    
 **$enableShutdownFunction** - Sometimes your application will return a response, then exit().  To enable cacheability of these responses, MG-Reverse-Proxy will register a shutdown function to obtain the output buffer and headers.  If you do not want these responses to be cached, set this parameter to false.
-
-## Adapters
 
 
 
