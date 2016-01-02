@@ -19,9 +19,9 @@ Symfony HTTPCache has the concept of a cache store.  By default, this is a local
 If you want to use a different caching strategy (memcache, redis...), you can create your own implementation of the StoreInterface.
 
 ##Example Usage - Wordpress index.php
+In this example, we replace the source code of the index.php file for Wordpress, and instead wrap the WordPress application using the ReverseProxy.
 
     <?php
-    /** Standard WordPress front-page **/
     include_once(dirname( __FILE__ ) . '/wp/wp-blog-header.php');
 
 Becomes...
@@ -36,6 +36,8 @@ Becomes...
     $store = new Store(dirname(__FILE__) . '/wp/wp-content/cache');
     $reverseProxy = new CachedReverseProxy(new WordPressAdapter(dirname( __FILE__ ) . '/wp/wp-blog-header.php', 600, $store));
     $reverseProxy->run();
+
+If we take a look at the program flow...
 
 Initial Request:
 
@@ -57,7 +59,7 @@ Subsequent Requests:
     Note: With a cached response, your application is not bootstrapped at all.  This can dramatically reduce response times.
       
 ## The WordPress Adapter
-A description of these constructor arguments....
+Included with is an adapter for WordPress.  A description of these constructor arguments....
 
 **$bootstrapFile** The path to the file that bootstraps your application.  For example, the wp-blog-header.php file in wordpress.   
 **$store** The cache store that you want the reverse proxy to use.   
@@ -66,6 +68,16 @@ A description of these constructor arguments....
 **$httpCacheOptions** - These are the options passed to the Symfony HTTPCache class.  See the Symfony documetation at http://symfony.com/doc/current/book/http_cache.html#symfony-reverse-proxy   
 
 ## Modifying the WordPress Adapter
+There are a number of entry points that you can use to modify the behavior of MG-Reverse-Proxy.  To use a custom wordpress adapter, extend the included class and overwrite the relevant method.  Or you can write your own adapter by implementing the ReverseCacheInterface.
+
+**isCachingEnabled** (bool) - If false, caching will be turned off, and all responses will hit the WordPress application.  The default behavior of the WordPress adapter is to turn off caching anytime the user is logged in.  This allows admin users to see the non-cached version of the website.
+**isShutdownFunctionEnabled** (bool) - If true, MG-Reverse-Proxy will register a shutdown function to capture output sent to the user after an exit() call.  This is useful for API-Like calls that often exit after echoing their response.  The default is true.    
+**setCacheHeaders** (Response) - This method is called to allow you to set custom cache headers.  Using this method you can mark certain methods as public.  By default, the WordPress adapter will set this to private if the user is logged in, and public otherwise.
+**bootstrap** (Void) - This method is called to bootstrap WordPress.    
+**getRawContent** (string) - This method returns back a string of the output buffers, that MG-Reverse-Proxy converts to a Symfony Response object.    
+**getDefaultResponseType** 'private' | 'public' - This method is called to set the default response type.  The default is private, so that you must explicitly mark responses as public to make them cacheable.  If you want all responses to becacheable, and you explicitly mark the private responses, overwrite this method and return 'public'.    
+
+## Example - 
 
 
 
