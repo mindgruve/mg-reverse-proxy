@@ -68,7 +68,9 @@ class WordPressAdapter implements CacheAdapterInterface
      */
     public function setCacheHeaders(Request $request, Response $response)
     {
-        if (!$this->isLoggedIn()) {
+        if ($this->isLoggedIn()) {
+            $response->setPrivate();
+        } else {
             $response->setPublic();
         }
         return $response;
