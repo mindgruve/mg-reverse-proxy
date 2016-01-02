@@ -14,16 +14,6 @@ of the responses by setting cache headers in your application or configuring you
 ## Cache Adapters
 Configuration of MG-Reverse-Proxy is handled through cache adapters.  Included in the source code is an adapter for WordPress, but you can write your own by implementing the CacheAdapterInterface.
 
-## The WordPress Adapter
-A description of these constructor arguments....
-
-**$bootstrapFile** The path to the file that bootstraps your application.  For example, the wp-blog-header.php file in wordpress.   
-**$store** The cache store that you want the reverse proxy to use.   
-**$maxAge** The default max-age for your responses.  You can instruct MG-Reverse-Proxy to vary this per request by adjusting your adapter.   
-**$surrogate** - See the documentation of the Symfony HTTPCache.  Useful if you are using Varnish.   
-**$httpCacheOptions** - These are the options passed to the Symfony HTTPCache class.    
-
-
 ## Stores
 Symfony HTTPCache has the concept of a cache store.  By default, this is a local directory on the file system.
 If you want to use a different caching strategy (memcache, redis...), you can create your own implementation of the StoreInterface.
@@ -66,7 +56,16 @@ Subsequent Requests:
             
     Note: With a cached response, your application is not bootstrapped at all.  This can dramatically reduce response times.
       
+## The WordPress Adapter
+A description of these constructor arguments....
 
+**$bootstrapFile** The path to the file that bootstraps your application.  For example, the wp-blog-header.php file in wordpress.   
+**$store** The cache store that you want the reverse proxy to use.   
+**$maxAge** The default max-age for your responses.  You can instruct MG-Reverse-Proxy to vary this per request by adjusting your adapter.   
+**$surrogate** - See the documentation of the Symfony HTTPCache.  Useful if you are using Varnish.   
+**$httpCacheOptions** - These are the options passed to the Symfony HTTPCache class.  See the Symfony documetation at http://symfony.com/doc/current/book/http_cache.html#symfony-reverse-proxy   
+
+## Modifying the WordPress Adapter
 
 
 
