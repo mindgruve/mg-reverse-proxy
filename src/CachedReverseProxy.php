@@ -12,14 +12,9 @@ class CachedReverseProxy
 {
 
     /**
-     * @var AdapterInterface
+     * @var AbstractCacheAdapter
      */
     protected $adapter;
-
-    /**
-     * @var Configuration
-     */
-    protected $configuration;
 
     /**
      * @var Request
@@ -36,14 +31,14 @@ class CachedReverseProxy
      */
     protected $bootstrapped = false;
 
-    public function __construct(AdapterInterface $adapter, Configuration $configuration)
+    public function __construct(AbstractCacheAdapter $adapter)
     {
+        $this->request = Request::createFromGlobals();
         $this->adapter = $adapter;
-        $this->configuration = $configuration;
-        if ($this->configuration->isShutdownFunctionEnabled()) {
+
+        if ($this->adapter->isShutdownFunctionEnabled()) {
             register_shutdown_function(array($this, 'handleShutdown'));
         }
-        $this->request = Request::createFromGlobals();
     }
 
     /**
@@ -62,12 +57,12 @@ class CachedReverseProxy
         $controllerResolver = new ControllerResolver(array($this, 'buildResponse'));
         $kernel = new HttpKernel(new EventDispatcher(), $controllerResolver);
 
-        if ($this->adapter->isEnabled()) {
+        if ($this->adapter->isCachingEnabled()) {
             $kernel = new HttpCache(
                 $kernel,
-                $this->configuration->getStore(),
-                $this->configuration->getSurrogate(),
-                $this->configuration->getHttpCacheOptions()
+                $this->adapter->getStore(),
+                $this->adapter->getSurrogate(),
+                $this->adapter->getHttpCacheOptions()
             );
         }
 
@@ -84,8 +79,7 @@ class CachedReverseProxy
     {
         if (!$this->bootstrapped) {
             $this->bootstrapped = true;
-            ob_start();
-            include_once($this->configuration->getBootstrapFilePath());
+            $this->adapter->bootstrap();
         }
     }
 
@@ -94,10 +88,7 @@ class CachedReverseProxy
      */
     public function getRawContent()
     {
-        $rawContent = ob_get_contents();
-        ob_end_clean();
-
-        return $rawContent;
+        return $this->adapter->getRawContent();
     }
 
     /**
@@ -110,24 +101,23 @@ class CachedReverseProxy
         $response = new Response($this->rawContent);
         $response->headers->add(getallheaders());
         $response->setStatusCode(http_response_code());
-        $response = $this->setCacheHeaders($this->configuration, $this->request, $response);
+        $response = $this->setCacheHeaders($this->request, $response);
 
         return $response;
     }
 
     /**
-     * @param Configuration $configuration
      * @param Request $request
      * @param Response $response
      * @return mixed
      */
-    public function setCacheHeaders(Configuration $configuration, Request $request, Response $response)
+    public function setCacheHeaders(Request $request, Response $response)
     {
-        $response->setMaxAge($configuration->getMaxAge());
-        if ($configuration->getDefaultResponseType() == Configuration::RESPONSE_TYPE_PRIVATE) {
+        $response->setMaxAge($this->adapter->getDefaultMaxAge());
+        if ($this->adapter->getDefaultResponseType() == AbstractCacheAdapter::RESPONSE_TYPE_PRIVATE) {
             $response->setPrivate();
         }
-        if ($configuration->getDefaultResponseType() == Configuration::RESPONSE_TYPE_PUBLIC) {
+        if ($this->adapter->getDefaultResponseType() == AbstractCacheAdapter::RESPONSE_TYPE_PUBLIC) {
             $response->setPublic();
         }
         return $this->adapter->setCacheHeaders($request, $response);
