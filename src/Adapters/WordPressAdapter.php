@@ -35,7 +35,7 @@ class WordPressAdapter extends AbstractCacheAdapter
      */
     protected $defaultMaxAge;
 
-    public function __construct($bootstrapFile, $defaultMaxAge,  StoreInterface $store, array $httpCacheOptions = array(), SurrogateInterface $surrogate = null)
+    public function __construct($bootstrapFile, $defaultMaxAge, StoreInterface $store, array $httpCacheOptions = array(), SurrogateInterface $surrogate = null)
     {
         $this->bootstrapFile = $bootstrapFile;
         $this->defaultMaxAge = $defaultMaxAge;
@@ -132,5 +132,12 @@ class WordPressAdapter extends AbstractCacheAdapter
         return $this->defaultMaxAge;
     }
 
+    /**
+     * @return string
+     */
+    public function getDefaultResponseType()
+    {
+        return self::RESPONSE_TYPE_PRIVATE;
+    }
 
 }
