@@ -54,9 +54,9 @@ Subsequent Requests:
     Request -> Is Caching Enabled 
             -> MG-Reverse-Proxy 
             -> Generated webpage pulled from cache
-            -> Returns response to user
+            -> Returns cached response to user
             
-    Note: With a cached response, your application is not bootstrapped at all.  This can dramatically reduce response times.
+    Note: With a cached response, your application is not bootstrapped at all.
       
 ## The WordPress Adapter
 Included with is an adapter for WordPress.  A description of these constructor arguments....
