@@ -53,14 +53,4 @@ interface CacheAdapterInterface
      */
     public function getRawContent();
 
-    /**
-     * @return int
-     */
-    public function getDefaultMaxAge();
-
-    /**
-     * @return string
-     */
-    public function getDefaultResponseType();
-
 }

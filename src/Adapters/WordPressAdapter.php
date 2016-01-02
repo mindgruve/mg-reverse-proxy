@@ -35,10 +35,9 @@ class WordPressAdapter implements CacheAdapterInterface
      */
     protected $defaultMaxAge;
 
-    public function __construct($bootstrapFile, $defaultMaxAge, StoreInterface $store, array $httpCacheOptions = array(), SurrogateInterface $surrogate = null)
+    public function __construct($bootstrapFile, StoreInterface $store, array $httpCacheOptions = array(), SurrogateInterface $surrogate = null)
     {
         $this->bootstrapFile = $bootstrapFile;
-        $this->defaultMaxAge = $defaultMaxAge;
         $this->store = $store;
         $this->surrogate = $surrogate;
         $this->httpCacheOptions = $httpCacheOptions;
@@ -128,22 +127,6 @@ class WordPressAdapter implements CacheAdapterInterface
         ob_end_clean();
 
         return $rawContent;
-    }
-
-    /**
-     * @return int
-     */
-    public function getDefaultMaxAge()
-    {
-        return $this->defaultMaxAge;
-    }
-
-    /**
-     * @return string
-     */
-    public function getDefaultResponseType()
-    {
-        return self::RESPONSE_TYPE_PRIVATE;
     }
 
 }

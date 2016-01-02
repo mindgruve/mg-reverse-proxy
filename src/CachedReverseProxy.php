@@ -108,13 +108,6 @@ class CachedReverseProxy
      */
     public function setCacheHeaders(Request $request, Response $response)
     {
-        $response->setMaxAge($this->adapter->getDefaultMaxAge());
-        if ($this->adapter->getDefaultResponseType() == CacheAdapterInterface::RESPONSE_TYPE_PRIVATE) {
-            $response->setPrivate();
-        }
-        if ($this->adapter->getDefaultResponseType() == CacheAdapterInterface::RESPONSE_TYPE_PUBLIC) {
-            $response->setPublic();
-        }
         return $this->adapter->setCacheHeaders($request, $response);
     }
 }
