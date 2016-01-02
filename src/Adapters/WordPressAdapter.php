@@ -3,6 +3,7 @@
 namespace Mindgruve\ReverseProxy\Adapters;
 
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class WordPressAdapter extends GenericAdapter
 {
@@ -26,5 +27,20 @@ class WordPressAdapter extends GenericAdapter
             }
         }
         return false;
+    }
+
+    /**
+     * @param Request $request
+     * @param Response $response
+     * @return Response
+     */
+    public function setCacheHeaders(Request $request, Response $response)
+    {
+        if ($this->isLoggedIn()) {
+            $response->setPrivate();
+        } else {
+            $response->setPublic();
+        }
+        return $response;
     }
 }
