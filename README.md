@@ -33,7 +33,7 @@ Subsequent Requests:
             -> Generated webpage pulled from cache
             -> Returns cached response to user
             
-    Note: With a cached response, your application is not bootstrapped at all, which can be a significant improvement in Server Response times.
+    Note: With a cached response, your application is not bootstrapped at all!
 
 ## Cache Adapters
 Configuration of MG-Reverse-Proxy is handled through cache adapters.  Included in the source code is a generic adapter, and one for WordPress, or you can write your own by implementing the **CacheAdapterInterface**.  
