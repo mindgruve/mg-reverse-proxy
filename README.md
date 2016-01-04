@@ -2,9 +2,7 @@
 
 MG-Reverse-Proxy provides a bridge between your application and the Symfony HTTP Cache.  It works by transforming the output buffer and headers created by your application into a Symfony Reponse object that the can be intellegently cached.
 
-Since MG-Reverse-Proxy is a simple wrapper around the Symfony HTTPCache, the documentation provided by Symfony will be helpful in understanding the internals of  MG-Reverse-Proxy.
-
-For more information on the Symfony HTTPCache see: http://symfony.com/doc/current/book/http_cache.html
+Since MG-Reverse-Proxy is a simple wrapper around the Symfony HTTPCache, the documentation provided by Symfony will be helpful in understanding the internals of  MG-Reverse-Proxy.  For more information on the Symfony HTTPCache see: http://symfony.com/doc/current/book/http_cache.html
 
 ## HTTP Caching Overview
 In general, MG-Reverse-Proxy will cache responses that are set to PUBLIC and have a non-zero MAX-AGE, and will only cache 'safe' HTTP methods.  There are many methods available to customize your response headers provided by the Symfony Response Object.
@@ -15,12 +13,36 @@ of the responses by setting cache headers in your application or configuring you
 
 You can use MG-Reverse-Proxy in situations where you want to speed up your application, but installing a dedicated Caching solution like Varnish might not be posible or available.  In contrast, MG-Reverse-Proxy is written in PHP which might be easier deploy.
 
+## Benefits of caching...
+
+Initial Request:
+
+    Request -> Is Caching Enabled?  
+            -> MG-Reverse-Proxy bootstraps your application
+            -> Your application generates webpage (multiple hits to database)
+            -> MG-Reverse-Proxy captures the outputbuffer and transforms it into a Response object
+            -> The cache adapter sets headers if applicable
+            -> The Response object is returned to the Symfony HTTPCache
+            -> The Symfony HTTPCache Stores Result in local cache 
+            -> Finally, the response is returned to user
+
+Subsequent Requests:
+
+    Request -> Is Caching Enabled?   
+            -> MG-Reverse-Proxy 
+            -> Generated webpage pulled from cache
+            -> Returns cached response to user
+            
+    Note: With a cached response, your application is not bootstrapped at all, which can be a significant improvement in Server Response times.
+
 ## Cache Adapters
-Configuration of MG-Reverse-Proxy is handled through cache adapters.  Included in the source code is a generic adapter, and one for WordPress.  You can write your own by implementing the **CacheAdapterInterface**.
+Configuration of MG-Reverse-Proxy is handled through cache adapters.  Included in the source code is a generic adapter, and one for WordPress, or you can write your own by implementing the **CacheAdapterInterface**.  
+
+The WordPress adapter was developed to allow developers to quickly cache their WordPress sites.  The WordPress adapter will cache all responses as long as the user isn't logged in.  If your application already sets cache headers, or you utilize a plugin like w3-total-cache, use the Generic Adapter instead.
 
 ## Stores
 Symfony HTTPCache has the concept of a cache store.  By default, this is a local directory on the file system.
-If you want to use a different caching strategy (memcache, redis...), you can create your own implementation of the StoreInterface.
+If you want to use a different caching strategy (memcache, redis...), you can create your own implementation of the **StoreInterface**.
 
 ##Example Usage - Wordpress index.php
 In this example, we replace the source code of the index.php file for Wordpress, and instead wrap the WordPress application using the ReverseProxy.
@@ -40,27 +62,6 @@ Becomes...
     $store = new Store(dirname(__FILE__) . '/wp/wp-content/cache');
     $reverseProxy = new CachedReverseProxy(new WordPressAdapter(dirname( __FILE__ ) . '/wp/wp-blog-header.php', 600, $store));
     $reverseProxy->run();
-
-## Comparision of initial response to a cached response
-
-Initial Request:
-
-    Request -> Is Caching Enabled 
-            -> MG-Reverse-Proxy 
-            -> bootstraps WordPress 
-            -> WordPress generates webpage (multiple hits to database)
-            -> Cache Headers Set 
-            -> Stores Result in local cache 
-            -> Returns response to user
-
-Subsequent Requests:
-
-    Request -> Is Caching Enabled 
-            -> MG-Reverse-Proxy 
-            -> Generated webpage pulled from cache
-            -> Returns cached response to user
-            
-    Note: With a cached response, your application is not bootstrapped at all.
       
 ## The WordPress Adapter
 Included with is an adapter for WordPress.  A description of these constructor arguments....
