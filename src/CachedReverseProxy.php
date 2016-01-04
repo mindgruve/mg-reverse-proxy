@@ -52,7 +52,8 @@ class CachedReverseProxy
         $this->buildAndCacheResponse();
     }
 
-    protected function buildAndCacheResponse(){
+    protected function buildAndCacheResponse()
+    {
         $controllerResolver = new ControllerResolver(array($this, 'buildResponse'));
         $kernel = new HttpKernel(new EventDispatcher(), $controllerResolver);
 

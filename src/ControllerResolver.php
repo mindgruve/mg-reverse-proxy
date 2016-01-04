@@ -28,8 +28,7 @@ class ControllerResolver implements ControllerResolverInterface
      */
     public function getArguments(Request $request, $controller)
     {
-        return array(
-        );
+        return array();
     }
 
     /**

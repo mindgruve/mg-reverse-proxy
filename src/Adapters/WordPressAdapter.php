@@ -26,6 +26,7 @@ class WordPressAdapter extends GenericAdapter
                 return true;
             }
         }
+
         return false;
     }
 
@@ -41,6 +42,7 @@ class WordPressAdapter extends GenericAdapter
         } else {
             $response->setPublic();
         }
+
         return $response;
     }
 }

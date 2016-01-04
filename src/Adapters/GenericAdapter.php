@@ -8,7 +8,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\HttpCache\StoreInterface;
 use Symfony\Component\HttpKernel\HttpCache\SurrogateInterface;
 
-class GenericAdapter implements  CacheAdapterInterface
+class GenericAdapter implements CacheAdapterInterface
 {
     /**
      * @var StoreInterface
@@ -35,8 +35,12 @@ class GenericAdapter implements  CacheAdapterInterface
      */
     protected $defaultMaxAge;
 
-    public function __construct($bootstrapFile, StoreInterface $store, array $httpCacheOptions = array(), SurrogateInterface $surrogate = null)
-    {
+    public function __construct(
+        $bootstrapFile,
+        StoreInterface $store,
+        array $httpCacheOptions = array(),
+        SurrogateInterface $surrogate = null
+    ) {
         $this->bootstrapFile = $bootstrapFile;
         $this->store = $store;
         $this->surrogate = $surrogate;
