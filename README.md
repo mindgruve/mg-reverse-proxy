@@ -17,11 +17,11 @@ You can use MG-Reverse-Proxy in situations where installing a dedicated caching 
 Initial Request:
 
     Request -> Is Caching Enabled?  
-            -> MG-Reverse-Proxy bootstraps your application
+            -> MG-Reverse-Proxy bootstraps your application and creates a HTTPCache object and HTTPKernel.
             -> Your application generates webpage (multiple hits to database)
             -> MG-Reverse-Proxy captures the outputbuffer and transforms it into a Response object
             -> The cache adapter sets headers if applicable
-            -> The Response object is returned to the Symfony HTTPCache provided by MG-Reverse-Procy
+            -> The Response object is returned to the Symfony HTTPCache
             -> The Symfony HTTPCache Stores Result in local cache 
             -> Finally, the response is returned to user
 
@@ -36,7 +36,7 @@ Subsequent Requests:
 ## Cache Adapters
 Configuration of MG-Reverse-Proxy is handled through cache adapters.  Included in the source code is a generic adapter, and one for WordPress.   If you want to write your own adapter implement the **Mindgruve\ReverseProxy\CacheAdapterInterface**.  
 
-**Note**: The WordPress adapter was developed to allow developers to quickly cache their WordPress sites.  The WordPress adapter will cache all responses as long as the user isn't logged in.  To do this the WordPress adapter sets cache header values.  If your application already sets cache headers, or you utilize a plugin like w3-total-cache, use the generic adapter.  The generic adapter respect the Headers set by your application.
+**Note**: The WordPress adapter was developed to allow developers to quickly cache their WordPress sites.  The WordPress adapter will cache all responses as long as the user isn't logged in.  To do this the WordPress adapter sets cache header values.  If your application already sets cache headers, or you utilize a plugin like w3-total-cache, use the generic adapter.  The generic adapter will respect the headers set by your application.
 
 ## Stores
 Symfony HTTPCache has the concept of a cache store.  By default, this is a local directory on the file system.
@@ -62,8 +62,8 @@ To enable caching for your WordPress application, you instantiate a cache store 
     $reverseProxy->run();
       
 
-## Modifying a Adapter
-There are a number of entry points that you can use to modify the behavior of MG-Reverse-Proxy.  To use a custom wordpress adapter, extend the included class and overwrite the relevant method.  Or you can write your own adapter by implementing the **CacheAdapterInterface**.
+## Modifying the WordPress Adapter
+There are a number of entry points that you can use to modify the behavior of the WordPress adapter.  First extend **Mindgruve\ReverseProxy\Adapters\WordPressAdapter** and overwrite the relevant method.  If your situation calls for much more drastic customization, you can write your own adapter by implementing the **Mindgruve\ReverseProxy\CacheAdapterInterface**.
 
 Here is a description of the important methods of your custom adapter:
 
@@ -71,11 +71,11 @@ Here is a description of the important methods of your custom adapter:
 
 The default of the generic adapter is true.  The default behavior of the WordPress adapter is to turn off caching anytime the user is logged in.    
 
-**isShutdownFunctionEnabled** (bool) - If true, MG-Reverse-Proxy will register a shutdown function to capture output sent to the user after an exit() call.  This is useful for API-Like calls that often exit after echoing their response.  
+**isShutdownFunctionEnabled** (bool) - If true, MG-Reverse-Proxy will register a shutdown function to capture output sent to the user after an exit() call.  This is useful because even though the application exits, a response is sent to the user.  Without a shutdown function, none of these responses would be able to be cached. 
 
-The default is true for both the Generic and the WordPress adapter.    
+The default is true for both the generic and the WordPress adapter.    
 
-**setCacheHeaders** (Response) - This method is called to allow you to set custom cache headers.  Using this method you can mark certain methods as public. 
+**setCacheHeaders** (Response) - This method is called to allow you to set custom cache headers for each request/response.  Using this method you can mark certain methods as public, modify the max-age, and set any cache header that you want since you have access to both the Request and Response objects.
 
 The Generic adapter will not set any Headers, and will respect the cache headers set by your application.  The WordPress adapter will set this to private if the user is logged in, and public otherwise. This means all responses for anonymous users will be cached.
 
