@@ -1,6 +1,6 @@
 # mg-reverse-proxy
 
-MG-Reverse-Proxy provides a bridge between your application and the Symfony HTTP Cache.  It works by transforming the output buffer and headers created by your application into a Symfony Reponse object that the can be intellegently cached.
+MG-Reverse-Proxy provides a bridge between your application and the Symfony HTTP Cache.  Using MG-Reverse-Proxy you can cache applications like Wordpress similar to how you would cache a Symfony application.  It works by transforming the output buffer and headers created by your application into a Symfony Reponse object that the can be intellegently cached.
 
 In general, MG-Reverse-Proxy will cache responses that are set to PUBLIC, have a positive MAX-AGE, and the request is a 'safe' HTTP methods (ie GET or HEAD).  
 
