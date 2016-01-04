@@ -1,6 +1,6 @@
 # mg-reverse-proxy
 
-MG-Reverse-Proxy works by transforming the output buffer and headers created by your application into a Symfony Reponse object that it can use to intellegently cache using the Symfony HTTP Cache.  
+MG-Reverse-Proxy provides a bridge between your application and the Symfony HTTP Cache.  It works by transforming the output buffer and headers created by your application into a Symfony Reponse object that the can be intellegently cached.
 
 ## HTTP Caching Overview
 In general, MG-Reverse-Proxy will cache responses that are set to PUBLIC and have a non-zero MAX-AGE, and will only cache 'safe' HTTP methods.  Since MG-Reverse-Proxy leverages the Symfony HTTPCache, there are many methods available to customize your response headers.
@@ -9,10 +9,10 @@ For more information on the Symfony HTTPCache see: http://symfony.com/doc/curren
 
 ## Use Cases
 Content heavy sites are a good candidate for MG-Reverse-Proxy.  You can customize the cacheability
-of the responses by setting cache headers in your application or configuring your cache adapter (described below).
+of the responses by setting cache headers in your application or configuring your cache adapter (described below).  You can use MG-Reverse-Proxy in situations where you want to speed up your application, but installing a dedicated Caching solution like Varnish might not be posible or available.  In contrast, MG-Reverse-Proxy is written in PHP which might be easier deploy than Varnish for some clients.
 
 ## Cache Adapters
-Configuration of MG-Reverse-Proxy is handled through cache adapters.  Included in the source code is an adapter for WordPress, but you can write your own by implementing the CacheAdapterInterface.
+Configuration of MG-Reverse-Proxy is handled through cache adapters.  Included in the source code is a generic adapter, and one for WordPress.  You can write your own by implementing the **CacheAdapterInterface**.
 
 ## Stores
 Symfony HTTPCache has the concept of a cache store.  By default, this is a local directory on the file system.
@@ -37,7 +37,7 @@ Becomes...
     $reverseProxy = new CachedReverseProxy(new WordPressAdapter(dirname( __FILE__ ) . '/wp/wp-blog-header.php', 600, $store));
     $reverseProxy->run();
 
-If we take a look at the program flow...
+## Comparision of initial response to a cached response
 
 Initial Request:
 
