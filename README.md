@@ -34,7 +34,7 @@ Subsequent Requests:
     Note: With a cached response, your application is not bootstrapped at all!
 
 ## Cache Adapters
-Configuration of MG-Reverse-Proxy is handled through cache adapters.  Included in the source code is a generic adapter, and one for WordPress.   If you want to write your own adapter implement the **Mindgruve\ReverseProxy\CacheAdapterInterface**.  
+Configuration of MG-Reverse-Proxy is handled through cache adapters.  Included in the source code are two adapters - a generic adapter, and one for WordPress.   If you want to write your own adapter implement the **Mindgruve\ReverseProxy\CacheAdapterInterface**.  
 
 **Note**: The WordPress adapter was developed to allow developers to quickly cache their WordPress sites.  The WordPress adapter will cache all responses as long as the user isn't logged in.  To do this the WordPress adapter sets cache header values.  If your application already sets cache headers (or you utilize a WordPress plugin like w3-total-cache) , the WordPress adapter will override your headers.  In this case, it is recommended to use the generic adapter since it will respect the headers set by your application.
 
