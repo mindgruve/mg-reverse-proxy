@@ -52,6 +52,8 @@ The index.php file for WordPress looks like...
 
 To enable caching for your WordPress application, you instantiate a cache store (which is a local directory for this example).  We instantiate a new CachedReverseProxy object, using the WordPress adapter, pass along the path to the bootstrap file, and the default MaxAge (which is 600 seconds in this example).
 
+The new (cached) index page source code would look similar to..
+
     <?php 
     include_once(__DIR__ . '/../../application/vendor/autoload.php');
 
@@ -94,7 +96,7 @@ In this example, we assume you have a WordPress site with a contact page, and yo
 
 You can update the cache adapter to implement your own business rules, by extending the WordPress adapter and overriding hte setCacheHeaders() method.  The setCacheHeaders() method is called **after** your application generates a response, but **before** the resonse is sent to the HTTPCache.  This allows you to modify the caching logic without changing your application.
 
-To exclude the url **/contact** from being cached...
+To exclude the url **/contact** from being cached your custom adapter could be...
 
     use Mindgruve\ReverseProxy\Adapters\WordPressAdapter;
     
