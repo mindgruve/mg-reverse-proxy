@@ -36,7 +36,7 @@ Subsequent Requests:
 ## Cache Adapters
 Configuration of MG-Reverse-Proxy is handled through cache adapters.  Included in the source code is a generic adapter, and one for WordPress.   If you want to write your own adapter implement the **Mindgruve\ReverseProxy\CacheAdapterInterface**.  
 
-**Note**: The WordPress adapter was developed to allow developers to quickly cache their WordPress sites.  The WordPress adapter will cache all responses as long as the user isn't logged in.  To do this the WordPress adapter sets cache header values.  If your application already sets cache headers, or you utilize a plugin like w3-total-cache, use the generic adapter.  The generic adapter will respect the headers set by your application.
+**Note**: The WordPress adapter was developed to allow developers to quickly cache their WordPress sites.  The WordPress adapter will cache all responses as long as the user isn't logged in.  To do this the WordPress adapter sets cache header values.  If your application already sets cache headers, or you utilize a plugin like w3-total-cache, the WordPress adapter will override your headers.  In this case, it is recommended to use the generic adapter since it will respect the headers set by your application.
 
 ## Stores
 Symfony HTTPCache has the concept of a cache store.  By default, this is a local directory on the file system.
@@ -67,9 +67,9 @@ There are a number of entry points that you can use to modify the behavior of th
 
 Here is a description of the important methods of your custom adapter:
 
-**isCachingEnabled** (bool) - If true, caching is enabled.  If false, caching will be turned off, and all responses will hit the application.  
+**isCachingEnabled** (bool) - If true, caching is enabled.  If false, caching will be turned off, and all responses will hit your application.
 
-The default of the generic adapter is true.  The default behavior of the WordPress adapter is to turn off caching anytime the user is logged in.    
+The default of the generic adapter is true.  The default behavior of the WordPress adapter is to turn off caching anytime the user is logged in.
 
 **isShutdownFunctionEnabled** (bool) - If true, MG-Reverse-Proxy will register a shutdown function to capture output sent to the user after an exit() call.  This is useful because even though the application exits, a response is sent to the user.  Without a shutdown function, none of these responses would be able to be cached. 
 
@@ -90,7 +90,7 @@ The Generic adapter will not set any Headers, and will respect the cache headers
 ## Example - Updating WordPress Adapter - Marking Contact Page as Private
 In this example, we assume you have a WordPress site with a contact page, and you are using MG-Reverse-Proxy to speed up the responsiveness of your site.  It all works well, except you have a contact form on the url **/contact**.   Caching this page is problematic because the CSRF token, and validation errors will get cached.  Remember, by default, the WordPress adapter will cache any page viewed by a anonymous user.  
 
-To override this behavior, create a new class...
+You can update the cache adapter to implement your own business rules, by extending the WordPress adapter and overriding hte **setCacheHeaders** method.  The setCacheHeaders method is called **after** your application generates a response, but **before** the resonse is sent to the HTTPCache.  This allows you to modify the caching logic without changing your application.  To do so, set the cache headers on the Response object and return.
 
     use Mindgruve\ReverseProxy\Adapters\WordPressAdapter;
     
@@ -118,7 +118,7 @@ To use this custom adapter, update your index.php file...
 
     $reverseProxy = new CachedReverseProxy(new CustomWordpressAdapter(dirname( __FILE__ ) . '/wp/wp-blog-header.php', 600, $store));
 
-**Note**:  The WordPress adapter is meant to be a quick way for developers to cache their WordPress application.  The setCacheHeaders function can become very large if your busines rules to determine which pages should be cached are complex.  At some point, it probably makes sense to refactor this caching logic out of the setCacheHeaders method and into your WordPress application. At that point you can switch your caching adapter to use the Generic adapter instead of the WordPress adapter. 
+**Note**:  The WordPress adapter is meant to be a quick way for developers to cache their WordPress application.  The setCacheHeaders function can become very large if your busines rules to determine which pages should be cached are complex.  At some point, it probably makes sense to refactor this caching logic out of the setCacheHeaders method and into your WordPress application. At that point you can switch your caching adapter to use the Generic adapter instead of the WordPress adapter. This will scale better and will allow you to switch out MG-Reverse-Proxy for a different solution such as Varnish.
 
 ## Bugs / Patches / Features
 Contributions are welcomed.  Feel free to fork and submit a pull request.  
