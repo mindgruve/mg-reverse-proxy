@@ -35,7 +35,7 @@ Subsequent Requests:
     Note: With a cached response, your application is not bootstrapped at all!
 
 ## Cache Adapters
-Configuration of MG-Reverse-Proxy is handled through cache adapters.  Included in the source code is a generic adapter, and one for WordPress, or you can write your own by implementing the **CacheAdapterInterface**.  
+Configuration of MG-Reverse-Proxy is handled through cache adapters.  Included in the source code is a generic adapter, and one for WordPress.   If you want to write your own adapter implement the **CacheAdapterInterface**.  
 
 The WordPress adapter was developed to allow developers to quickly cache their WordPress sites.  The WordPress adapter will cache all responses as long as the user isn't logged in.  If your application already sets cache headers, or you utilize a plugin like w3-total-cache, use the Generic Adapter instead.
 
@@ -44,12 +44,12 @@ Symfony HTTPCache has the concept of a cache store.  By default, this is a local
 If you want to use a different caching strategy (memcache, redis...), you can create your own implementation of the **StoreInterface**.
 
 ##Example Usage - Wordpress index.php
-In this example, we replace the source code of the index.php file for Wordpress, and instead wrap the WordPress application using the ReverseProxy.
+The index.php file for WordPress looks like...
 
     <?php
-    include_once(dirname( __FILE__ ) . '/wp/wp-blog-header.php');
+    include_once(dirname( __FILE__ ) . '/wp-blog-header.php');
 
-Becomes...
+To enable caching for your WordPress application, you instantiate a cache store (which is a local directory for this example).  We instantiate a new CachedReverseProxy object, using the WordPress adapter, pass along the path to the bootstrap file, and the default MaxAge (which is 600 seconds in this example).
 
     <?php 
     include_once(__DIR__ . '/../../application/vendor/autoload.php');
@@ -58,8 +58,8 @@ Becomes...
     use Mindgruve\ReverseProxy\CachedReverseProxy;
     use Mindgruve\ReverseProxy\Adapters\WordPressAdapter;
 
-    $store = new Store(dirname(__FILE__) . '/wp/wp-content/cache');
-    $reverseProxy = new CachedReverseProxy(new WordPressAdapter(dirname( __FILE__ ) . '/wp/wp-blog-header.php', 600, $store));
+    $store = new Store(dirname(__FILE__) . '/wp-content/cache');
+    $reverseProxy = new CachedReverseProxy(new WordPressAdapter(dirname( __FILE__ ) . '/wp-blog-header.php', 600, $store));
     $reverseProxy->run();
       
 ## The WordPress Adapter
