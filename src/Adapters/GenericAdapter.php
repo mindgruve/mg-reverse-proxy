@@ -37,11 +37,13 @@ class GenericAdapter implements CacheAdapterInterface
 
     public function __construct(
         $bootstrapFile,
+        $defaultMaxAge,
         StoreInterface $store,
         array $httpCacheOptions = array(),
         SurrogateInterface $surrogate = null
     ) {
         $this->bootstrapFile = $bootstrapFile;
+        $this->defaultMaxAge = $defaultMaxAge;
         $this->store = $store;
         $this->surrogate = $surrogate;
         $this->httpCacheOptions = $httpCacheOptions;
