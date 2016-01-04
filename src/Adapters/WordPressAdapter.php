@@ -37,6 +37,8 @@ class WordPressAdapter extends GenericAdapter
      */
     public function setCacheHeaders(Request $request, Response $response)
     {
+        $response->setMaxAge($this->defaultMaxAge);
+
         if ($this->isLoggedIn()) {
             $response->setPrivate();
         } else {
