@@ -101,7 +101,7 @@ class CachedReverseProxy
         $response = new Response($rawContent);
 
         /**
-         * Grab the headers to be sent to the client
+         * Grab the headers and update response object
          */
         $currentHeaders = headers_list();
         foreach ($currentHeaders as $header) {
