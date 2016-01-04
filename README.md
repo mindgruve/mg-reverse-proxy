@@ -75,7 +75,7 @@ The default of the generic adapter is true.  The default behavior of the WordPre
 
 The default is true for both the generic and the WordPress adapter.    
 
-**setCacheHeaders** (Response) - This method is called to allow you to set custom cache headers for each request/response.  Using this method you can mark certain methods as public, modify the max-age, and set any cache header that you want since you have access to both the Request and Response objects.
+**setCacheHeaders** (Response) - This method is called to allow you to set custom cache headers for each request/response.  Using this method you can mark certain methods as public, modify the max-age, and set any cache header that you want.
 
 The Generic adapter will not set any Headers, and will respect the cache headers set by your application.  The WordPress adapter will set this to private if the user is logged in, and public otherwise. This means all responses for anonymous users will be cached.
 
