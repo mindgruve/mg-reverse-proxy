@@ -2,14 +2,18 @@
 
 MG-Reverse-Proxy provides a bridge between your application and the Symfony HTTP Cache.  It works by transforming the output buffer and headers created by your application into a Symfony Reponse object that the can be intellegently cached.
 
-## HTTP Caching Overview
-In general, MG-Reverse-Proxy will cache responses that are set to PUBLIC and have a non-zero MAX-AGE, and will only cache 'safe' HTTP methods.  Since MG-Reverse-Proxy leverages the Symfony HTTPCache, there are many methods available to customize your response headers.
+Since MG-Reverse-Proxy is a simple wrapper around the Symfony HTTPCache, the documentation provided by Symfony will be helpful in understanding the internals of  MG-Reverse-Proxy.
 
 For more information on the Symfony HTTPCache see: http://symfony.com/doc/current/book/http_cache.html
 
+## HTTP Caching Overview
+In general, MG-Reverse-Proxy will cache responses that are set to PUBLIC and have a non-zero MAX-AGE, and will only cache 'safe' HTTP methods.  There are many methods available to customize your response headers provided by the Symfony Response Object.
+
 ## Use Cases
 Content heavy sites are a good candidate for MG-Reverse-Proxy.  You can customize the cacheability
-of the responses by setting cache headers in your application or configuring your cache adapter (described below).  You can use MG-Reverse-Proxy in situations where you want to speed up your application, but installing a dedicated Caching solution like Varnish might not be posible or available.  In contrast, MG-Reverse-Proxy is written in PHP which might be easier deploy than Varnish for some clients.
+of the responses by setting cache headers in your application or configuring your cache adapter (described below).    
+
+You can use MG-Reverse-Proxy in situations where you want to speed up your application, but installing a dedicated Caching solution like Varnish might not be posible or available.  In contrast, MG-Reverse-Proxy is written in PHP which might be easier deploy.
 
 ## Cache Adapters
 Configuration of MG-Reverse-Proxy is handled through cache adapters.  Included in the source code is a generic adapter, and one for WordPress.  You can write your own by implementing the **CacheAdapterInterface**.
