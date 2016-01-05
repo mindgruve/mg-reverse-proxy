@@ -26,6 +26,8 @@ class CachedReverseProxy
      */
     protected $bootstrapped = false;
 
+    protected $shutDownFunctionEnabled = false;
+
     public function __construct(CacheAdapterInterface $adapter)
     {
         $this->request = Request::createFromGlobals();
@@ -33,6 +35,7 @@ class CachedReverseProxy
 
         if ($this->adapter->isShutdownFunctionEnabled($this->request)) {
             register_shutdown_function(array($this, 'handleShutdown'));
+            $this->shutDownFunctionEnabled = true;
         }
     }
 
@@ -41,7 +44,9 @@ class CachedReverseProxy
      */
     public function handleShutdown()
     {
-        $this->buildAndCacheResponse();
+        if ($this->shutDownFunctionEnabled) {
+            $this->buildAndCacheResponse();
+        }
     }
 
     /**
@@ -54,6 +59,7 @@ class CachedReverseProxy
 
     protected function buildAndCacheResponse()
     {
+
         $controllerResolver = new ControllerResolver(array($this, 'buildResponse'));
         $kernel = new HttpKernel(new EventDispatcher(), $controllerResolver);
 
@@ -66,8 +72,8 @@ class CachedReverseProxy
             );
         }
 
-
         $response = $kernel->handle($this->request);
+        $this->shutDownFunctionEnabled = false;
         $response->send();
         $kernel->terminate($this->request, $response);
     }
