@@ -111,7 +111,7 @@ class CachedReverseProxy
             }
         }
 
-        $response->setStatusCode(http_response_code());
+        $response->setStatusCode($this->getHTTPStatusCode($response));
         $response = $this->setCacheHeaders($this->request, $response);
 
         return $response;
@@ -125,6 +125,22 @@ class CachedReverseProxy
     public function setCacheHeaders(Request $request, Response $response)
     {
         return $this->adapter->setCacheHeaders($request, $response);
+    }
+
+    public function getHTTPStatusCode(Response $response)
+    {
+
+        if (function_exists('http_response_code')) {
+            return http_response_code();
+        }
+
+        foreach ($response->headers as $header) {
+            if (preg_match("#^HTTP/\S+\s+(\d\d\d)#i", $header, $matches)) {
+                return $matches[1];
+            }
+        }
+
+        return 200;
     }
 
     public function parseHTTPHeaders($header)
