@@ -16,7 +16,7 @@ class ControllerResolver implements ControllerResolverInterface
     /**
      * @param callable $controller
      */
-    public function __construct(Callable $controller)
+    public function __construct($controller)
     {
         $this->controller = $controller;
     }
