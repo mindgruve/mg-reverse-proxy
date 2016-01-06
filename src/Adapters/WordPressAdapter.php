@@ -44,6 +44,10 @@ class WordPressAdapter extends GenericAdapter
             return true;
         }
 
+        if (preg_match('/admin/', $request->getRequestUri())) {
+            return true;
+        }
+
         return false;
     }
 
