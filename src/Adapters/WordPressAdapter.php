@@ -13,18 +13,33 @@ class WordPressAdapter extends GenericAdapter
      */
     public function isCachingEnabled(Request $request)
     {
-        return $this->isLoggedIn() == false;
+        if ($this->isLoggedIn($request)) {
+            return false;
+        }
+
+        if ($this->isWordpressAdminPage($request)) {
+            return false;
+        }
     }
 
     /**
      * @return bool
      */
-    protected function isLoggedIn()
+    protected function isLoggedIn(Request $request)
     {
-        foreach ($_COOKIE as $key => $value) {
+        foreach ($request->cookies as $key => $value) {
             if (preg_match('/^wordpress_logged_in_(.*)/', $key)) {
                 return true;
             }
+        }
+
+        return false;
+    }
+
+    protected function isWordpressAdminPage(Request $request)
+    {
+        if (preg_match('/wp-admin/', $request->getRequestUri())) {
+            return true;
         }
 
         return false;
@@ -39,7 +54,7 @@ class WordPressAdapter extends GenericAdapter
     {
         $response->setMaxAge($this->defaultMaxAge);
 
-        if ($this->isLoggedIn()) {
+        if ($this->isLoggedIn($request) || $this->isLoggedIn($request)) {
             $response->setPrivate();
         } else {
             $response->setPublic();
