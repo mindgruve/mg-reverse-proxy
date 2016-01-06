@@ -130,7 +130,11 @@ class CachedReverseProxy
      */
     public function setCacheHeaders(Request $request, Response $response)
     {
-        return $this->adapter->setCacheHeaders($request, $response);
+        if ($this->adapter->isCachingEnabled($this->request)) {
+            return $this->adapter->setCacheHeaders($request, $response);
+        }
+
+        return $response;
     }
 
     public function getHTTPStatusCode(Response $response)
