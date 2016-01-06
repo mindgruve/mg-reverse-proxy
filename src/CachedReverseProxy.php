@@ -26,6 +26,9 @@ class CachedReverseProxy
      */
     protected $bootstrapped = false;
 
+    /**
+     * @var bool
+     */
     protected $shutDownFunctionEnabled = false;
 
     public function __construct(CacheAdapterInterface $adapter)
@@ -57,6 +60,9 @@ class CachedReverseProxy
         $this->buildAndCacheResponse();
     }
 
+    /**
+     *
+     */
     protected function buildAndCacheResponse()
     {
 
