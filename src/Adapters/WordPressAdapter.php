@@ -20,6 +20,8 @@ class WordPressAdapter extends GenericAdapter
         if ($this->isWordpressAdminPage($request)) {
             return false;
         }
+
+        return true;
     }
 
     /**
