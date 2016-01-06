@@ -54,7 +54,7 @@ class WordPressAdapter extends GenericAdapter
     {
         $response->setMaxAge($this->defaultMaxAge);
 
-        if ($this->isLoggedIn($request) || $this->isLoggedIn($request)) {
+        if ($this->isLoggedIn($request) || $this->isWordpressAdminPage($request)) {
             $response->setPrivate();
         } else {
             $response->setPublic();
