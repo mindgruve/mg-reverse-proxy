@@ -19,7 +19,7 @@ interface CacheAdapterInterface
      * @param Request $request
      * @return boolean
      */
-    public function isShutdownFunctionEnabled(Request $request);
+    public function captureResponseOnShutdown(Request $request);
 
     /**
      * @param Request $request
