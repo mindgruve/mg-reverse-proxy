@@ -17,12 +17,6 @@ interface CacheAdapterInterface
 
     /**
      * @param Request $request
-     * @return boolean
-     */
-    public function captureResponseOnShutdown(Request $request);
-
-    /**
-     * @param Request $request
      * @param Response $response
      */
     public function setCacheHeaders(Request $request, Response $response);

@@ -30,18 +30,6 @@ class CachedReverseProxy
     {
         $this->request = Request::createFromGlobals();
         $this->adapter = $adapter;
-
-        if ($this->adapter->captureResponseOnShutdown($this->request)) {
-            register_shutdown_function(array($this, 'handleShutdown'));
-        }
-    }
-
-    /**
-     *
-     */
-    public function handleShutdown()
-    {
-        $this->buildAndCacheResponse();
     }
 
     /**

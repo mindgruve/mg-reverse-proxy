@@ -59,15 +59,6 @@ class GenericAdapter implements CacheAdapterInterface
 
     /**
      * @param Request $request
-     * @return bool
-     */
-    public function captureResponseOnShutdown(Request $request)
-    {
-        return false;
-    }
-
-    /**
-     * @param Request $request
      * @param Response $response
      * @return Response
      */
