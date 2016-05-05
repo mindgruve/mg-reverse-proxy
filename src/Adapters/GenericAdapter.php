@@ -26,9 +26,9 @@ class GenericAdapter implements CacheAdapterInterface
     protected $httpCacheOptions;
 
     /**
-     * @var string
+     * @var callable
      */
-    protected $bootstrapFile;
+    protected $bootstrapFunction;
 
     /**
      * @var int
@@ -36,13 +36,13 @@ class GenericAdapter implements CacheAdapterInterface
     protected $defaultMaxAge;
 
     public function __construct(
-        $bootstrapFile,
+        callable $bootstrapFunction,
         $defaultMaxAge,
         StoreInterface $store,
         array $httpCacheOptions = array(),
         SurrogateInterface $surrogate = null
     ) {
-        $this->bootstrapFile = $bootstrapFile;
+        $this->bootstrapFunction = $bootstrapFunction;
         $this->defaultMaxAge = $defaultMaxAge;
         $this->store = $store;
         $this->surrogate = $surrogate;
@@ -91,10 +91,15 @@ class GenericAdapter implements CacheAdapterInterface
         return $this->httpCacheOptions;
     }
 
+    /**
+     * @param Request $request
+     * @return mixed|void
+     */
     public function bootstrap(Request $request)
     {
         ob_start();
-        include_once($this->bootstrapFile);
+
+        call_user_func($this->bootstrapFunction, array($request));
     }
 
     /**

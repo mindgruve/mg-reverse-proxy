@@ -36,7 +36,10 @@ interface CacheAdapterInterface
      */
     public function getHttpCacheOptions(Request $request);
 
-
+    /**
+     * @param Request $request
+     * @return mixed
+     */
     public function bootstrap(Request $request);
 
     /**
