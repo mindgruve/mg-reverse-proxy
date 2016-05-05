@@ -36,7 +36,7 @@ class GenericAdapter implements CacheAdapterInterface
     protected $defaultMaxAge;
 
     public function __construct(
-        callable $bootstrapFunction,
+        $bootstrapFunction,
         $defaultMaxAge,
         StoreInterface $store,
         array $httpCacheOptions = array(),
